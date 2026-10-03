@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ExpenseFlow - Personal Expense Tracker</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- Header -->
+        <header class="header">
+
+            <div>
+                <h1>ExpenseFlow</h1>
+                <p>Smart personal finance tracking</p>
+            </div>
+
+            <button id="themeToggle" class="theme-btn">
+                🌙 Dark Mode
+            </button>
+
+        </header>
+
+
+        <!-- Balance -->
+        <section class="balance-card">
+
+            <p>Current Balance</p>
+
+            <h2 id="balance">₹0.00</h2>
+
+            <span>Income - Expenses</span>
+
+        </section>
+
+
+        <!-- Summary -->
+        <section class="summary">
+
+            <div class="summary-card income-card">
+
+                <div class="icon">↗</div>
+
+                <div>
+                    <p>Total Income</p>
+                    <h3 id="income">₹0.00</h3>
+                </div>
+
+            </div>
+
+
+            <div class="summary-card expense-card">
+
+                <div class="icon">↘</div>
+
+                <div>
+                    <p>Total Expense</p>
+                    <h3 id="expense">₹0.00</h3>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Main Grid -->
+        <div class="main-grid">
+
+            <!-- Add Transaction -->
+            <section class="form-section">
+
+                <div class="section-title">
+                    <div>
+                        <h2>Add Transaction</h2>
+                        <p>Add your income or expense</p>
+                    </div>
+                </div>
+
+
+                <form id="transactionForm">
+
+                    <div class="form-group">
+
+                        <label for="description">
+                            Description
+                        </label>
+
+                        <input
+                            type="text"
+                            id="description"
+                            placeholder="e.g. Grocery Shopping"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+
+                            <label for="amount">
+                                Amount
+                            </label>
+
+                            <input
+                                type="number"
+                                id="amount"
+                                placeholder="₹ 0.00"
+                                min="1"
+                                step="0.01"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="type">
+                                Type
+                            </label>
+
+                            <select id="type">
+
+                                <option value="expense">
+                                    Expense
+                                </option>
+
+                                <option value="income">
+                                    Income
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+
+                            <label for="category">
+                                Category
+                            </label>
+
+                            <select id="category">
+
+                                <option value="Food">
+                                    🍔 Food
+                                </option>
+
+                                <option value="Travel">
+                                    🚗 Travel
+                                </option>
+
+                                <option value="Shopping">
+                                    🛍️ Shopping
+                                </option>
+
+                                <option value="Bills">
+                                    💡 Bills
+                                </option>
+
+                                <option value="Education">
+                                    📚 Education
+                                </option>
+
+                                <option value="Entertainment">
+                                    🎬 Entertainment
+                                </option>
+
+                                <option value="Salary">
+                                    💼 Salary
+                                </option>
+
+                                <option value="Other">
+                                    📦 Other
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="date">
+                                Date
+                            </label>
+
+                            <input
+                                type="date"
+                                id="date"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="add-btn"
+                        id="submitBtn"
+                    >
+                        + Add Transaction
+                    </button>
+
+                    <button
+                        type="button"
+                        class="cancel-btn"
+                        id="cancelEdit"
+                    >
+                        Cancel Edit
+                    </button>
+
+                </form>
+
+            </section>
+
+
+            <!-- Chart -->
+            <section class="chart-section">
+
+                <div class="section-title">
+
+                    <div>
+                        <h2>Expense Overview</h2>
+                        <p>Spending by category</p>
+                    </div>
+
+                </div>
+
+                <div class="chart-container">
+
+                    <canvas id="expenseChart"></canvas>
+
+                </div>
+
+                <p id="chartEmpty" class="chart-empty">
+                    Add expenses to see your chart.
+                </p>
+
+            </section>
+
+        </div>
+
+
+        <!-- Transactions -->
+        <section class="history-section">
+
+            <div class="history-header">
+
+                <div>
+                    <h2>Transaction History</h2>
+                    <p>Manage your recent transactions</p>
+                </div>
+
+                <button id="clearAll" class="clear-btn">
+                    Clear All
+                </button>
+
+            </div>
+
+
+            <!-- Search + Filters -->
+            <div class="filters">
+
+                <div class="search-box">
+
+                    🔎
+
+                    <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Search transactions..."
+                    >
+
+                </div>
+
+
+                <select id="filterType">
+
+                    <option value="all">
+                        All Types
+                    </option>
+
+                    <option value="income">
+                        Income
+                    </option>
+
+                    <option value="expense">
+                        Expense
+                    </option>
+
+                </select>
+
+
+                <select id="filterCategory">
+
+                    <option value="all">
+                        All Categories
+                    </option>
+
+                    <option value="Food">
+                        Food
+                    </option>
+
+                    <option value="Travel">
+                        Travel
+                    </option>
+
+                    <option value="Shopping">
+                        Shopping
+                    </option>
+
+                    <option value="Bills">
+                        Bills
+                    </option>
+
+                    <option value="Education">
+                        Education
+                    </option>
+
+                    <option value="Entertainment">
+                        Entertainment
+                    </option>
+
+                    <option value="Salary">
+                        Salary
+                    </option>
+
+                    <option value="Other">
+                        Other
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div
+                id="transactionList"
+                class="transaction-list"
+            >
+
+                <p class="empty-message">
+                    No transactions yet.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- Footer -->
+        <footer>
+
+            <p>
+                ExpenseFlow • Personal Finance Dashboard
+            </p>
+
+        </footer>
+
+    </div>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>
